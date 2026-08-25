@@ -19,7 +19,7 @@ export function Kits() {
       role: "caseta",
       gender: "hombre",
       title: ROLE_LABEL.caseta,
-      note: "Polo azul rey unisex; pantalón y prenda Oxford según género",
+      note: "Pantalón caqui y polo azul rey unisex; prenda Oxford según género",
     },
   ];
 
@@ -30,7 +30,7 @@ export function Kits() {
         <h1 className="font-display text-3xl tracking-tight text-primary">Kits de ingreso</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted">
           Se muestran los seis kits de ingreso. El supervisor de mantenimiento usa prendas de mezclilla.
-          El operador de caseta usa polo azul rey unisex; pantalón y prenda Oxford se ajustan al género seleccionado.
+          El pantalón caqui se maneja como unisex para supervisión y caseta. El operador de caseta usa también polo azul rey unisex; la prenda Oxford se ajusta al género seleccionado.
           Las polos azul cielo, azul marino y azul rey se manejan como unisex. Al registrar una entrega, el sistema descuenta automáticamente las prendas del inventario.
         </p>
       </div>

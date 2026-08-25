@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 130" role="img" aria-labelledby="t d">
+  <title id="t">Grupo Industrial</title>
+  <desc id="d">Identidad corporativa en verde, azul petróleo y naranja.</desc>
+  <g transform="translate(10 15)">
+    <path d="M14 12h43l19 32-20 35H14L-6 44z" fill="#0c5161" transform="translate(12 0)"/>
+    <path d="M42 0h32l18 31-16 27-20-34H18z" fill="#f28a2e" transform="translate(12 0)"/>
+    <path d="M18 60h38l18 30-8 14H22L4 73z" fill="#68aa43" transform="translate(12 0)"/>
+  </g>
+  <text x="130" y="55" fill="#123e4c" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800" letter-spacing="2">GRUPO INDUSTRIAL</text>
+  <text x="130" y="88" fill="#5a6265" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" letter-spacing="4">CESANTONI</text>
+  <rect x="130" y="99" width="210" height="5" rx="2.5" fill="#f28a2e"/>
+  <rect x="345" y="99" width="86" height="5" rx="2.5" fill="#68aa43"/>
+</svg>

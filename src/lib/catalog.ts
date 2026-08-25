@@ -139,7 +139,7 @@ export const FAMILY_LABEL: Record<Family, string> = {
   "camisa-mezclilla-cab": "Camisa mezclilla caballero",
   "camisa-mezclilla-dama": "Camisa mezclilla dama",
   "pantalon-mezclilla-dama": "Pantalón mezclilla dama",
-  "pantalon-caqui-cab": "Pantalón caqui caballero",
+  "pantalon-caqui-cab": "Pantalón caqui (unisex)",
   "pantalon-mezclilla-cab": "Pantalón mezclilla caballero",
   "polo-cielo": "Polo azul cielo",
   "polo-marino": "Polo azul marino",
@@ -194,13 +194,9 @@ function standardSupervisorKit(gender: Gender): KitPiece[] {
   return [
     {
       key: "pantalon",
-      label: gender === "mujer" ? "Pantalón mezclilla dama" : "Pantalón caqui",
+      label: "Pantalón caqui (unisex)",
       qty: 2,
-      family: gender === "mujer" ? "pantalon-mezclilla-dama" : "pantalon-caqui-cab",
-      note:
-        gender === "mujer"
-          ? "No hay pantalón caqui dama en el catálogo actual; se usa mezclilla dama."
-          : undefined,
+      family: "pantalon-caqui-cab",
     },
     {
       key: "zapato",
@@ -227,13 +223,9 @@ function casetaKit(gender: Gender): KitPiece[] {
   return [
     {
       key: "pantalon",
-      label: gender === "mujer" ? "Pantalón mezclilla dama" : "Pantalón caqui",
+      label: "Pantalón caqui (unisex)",
       qty: 2,
-      family: gender === "mujer" ? "pantalon-mezclilla-dama" : "pantalon-caqui-cab",
-      note:
-        gender === "mujer"
-          ? "No hay pantalón caqui dama en el catálogo actual; se usa mezclilla dama."
-          : undefined,
+      family: "pantalon-caqui-cab",
     },
     {
       key: "zapato",

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 130" role="img" aria-labelledby="t d">
+  <title id="t">Cesantoni Cerámica</title>
+  <desc id="d">Identidad gráfica Cesantoni con mosaico de colores y nombre de marca.</desc>
+  <g transform="translate(8 14)">
+    <rect x="0" y="0" width="28" height="28" rx="3" fill="#77bd43"/>
+    <rect x="33" y="0" width="28" height="28" rx="3" fill="#3d9c54"/>
+    <rect x="66" y="0" width="28" height="28" rx="3" fill="#2a7184"/>
+    <rect x="0" y="33" width="28" height="28" rx="3" fill="#79c447"/>
+    <rect x="33" y="33" width="28" height="28" rx="3" fill="#2c8f65"/>
+    <rect x="66" y="33" width="28" height="28" rx="3" fill="#347d9d"/>
+    <rect x="0" y="66" width="28" height="28" rx="3" fill="#d95048"/>
+    <rect x="33" y="66" width="28" height="28" rx="3" fill="#f08b32"/>
+    <rect x="66" y="66" width="28" height="28" rx="3" fill="#e1ab28"/>
+  </g>
+  <text x="122" y="78" fill="#4f5558" font-family="Arial, Helvetica, sans-serif" font-size="69" font-style="italic" font-weight="700" letter-spacing="-3">cesantoni</text>
+  <text x="384" y="111" fill="#73787a" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" letter-spacing="9">CERÁMICA</text>
+</svg>
