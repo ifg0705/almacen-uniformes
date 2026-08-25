@@ -398,3 +398,114 @@ export const deleteDeliveryOnServer = createServerFn({ method: "POST" })
     return snapshot();
   });
 
+
+export type FullBackup = InventorySnapshot;
+
+export const getFullBackup = createServerFn({ method: "GET" }).handler(async (): Promise<FullBackup> => {
+  await ensureSeeded();
+  const { getSql, dbSource } = await getDb();
+  const sql = await getSql();
+
+  const itemRows = await sql.query<{
+    id: string;
+    description: string;
+    family: Item["family"];
+    size: string;
+    stock: number;
+    min_stock: number;
+    unit_cost: string | number;
+  }>(
+    `select id, description, family, size, stock, min_stock, unit_cost
+     from inventory_items
+     order by id`,
+  );
+
+  const deliveryRows = await sql.query<{
+    id: string;
+    delivery_date: string;
+    employee_name: string;
+    area: string;
+    role: Role;
+    gender: Gender;
+  }>(
+    `select id, delivery_date, employee_name, area, role, gender
+     from deliveries
+     order by created_at desc`,
+  );
+
+  const lineRows = await sql.query<{
+    delivery_id: string;
+    item_id: string;
+    description: string;
+    qty: number;
+    size: string;
+  }>(
+    `select delivery_id, item_id, description, qty, size
+     from delivery_lines
+     order by id`,
+  );
+
+  const movementRows = await sql.query<{
+    id: string;
+    movement_date: string;
+    movement_type: StockMovement["type"];
+    item_id: string;
+    description: string;
+    qty_change: number;
+    reference: string;
+    supplier: string;
+    note: string;
+    created_at: string | Date;
+  }>(
+    `select id, movement_date, movement_type, item_id, description,
+            qty_change, reference, supplier, note, created_at
+     from stock_movements
+     order by created_at desc`,
+  );
+
+  const linesByDelivery = new Map<string, DeliveryLine[]>();
+  for (const row of lineRows) {
+    const lines = linesByDelivery.get(row.delivery_id) ?? [];
+    lines.push({
+      itemId: row.item_id,
+      description: row.description,
+      qty: Number(row.qty),
+      size: row.size,
+    });
+    linesByDelivery.set(row.delivery_id, lines);
+  }
+
+  return {
+    items: itemRows.map((row) => ({
+      id: row.id,
+      description: row.description,
+      family: row.family,
+      size: row.size,
+      stock: Number(row.stock),
+      minStock: Number(row.min_stock),
+      unitCost: Number(row.unit_cost),
+    })),
+    deliveries: deliveryRows.map((row) => ({
+      id: row.id,
+      date: row.delivery_date,
+      name: row.employee_name,
+      area: row.area,
+      role: row.role,
+      gender: row.gender,
+      lines: linesByDelivery.get(row.id) ?? [],
+    })),
+    movements: movementRows.map((row) => ({
+      id: row.id,
+      date: row.movement_date,
+      type: row.movement_type,
+      itemId: row.item_id,
+      description: row.description,
+      qtyChange: Number(row.qty_change),
+      reference: row.reference,
+      supplier: row.supplier,
+      note: row.note,
+      createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
+    })),
+    persistent: dbSource === "neon",
+  };
+});

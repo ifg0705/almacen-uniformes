@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="app-shell-enter min-h-dvh bg-bg text-fg">
-      <header className="border-b border-border bg-[#4b5257]">
+      <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img
@@ -121,7 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6 pb-24 md:pb-10">{children}</main>
-      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-[#4b5257] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface md:hidden">
         <div className="grid grid-cols-6">
           {NAV.map((item) => {
             const Icon = item.icon;
