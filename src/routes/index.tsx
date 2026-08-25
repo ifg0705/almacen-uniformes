@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, Package, PackagePlus, Shirt, Users } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, Download, Package, PackagePlus, Shirt, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FAMILY_LABEL, stockStatus } from "@/lib/catalog";
 import { useInventory } from "@/lib/store";
+import { getFullBackup } from "@/lib/inventory-api";
+import { downloadBackupXlsx } from "@/lib/excel-export";
 import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -16,6 +19,21 @@ function Home() {
   const units = items.reduce((a, i) => a + i.stock, 0);
   const value = items.reduce((a, i) => a + i.stock * i.unitCost, 0);
   const alerts = [...agotados, ...bajos];
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
+
+  async function exportExcel() {
+    setExporting(true);
+    setExportError("");
+    try {
+      const backup = await getFullBackup();
+      downloadBackupXlsx(backup);
+    } catch (error) {
+      setExportError(error instanceof Error ? error.message : "No se pudo generar el respaldo.");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -37,8 +55,17 @@ function Home() {
           <Button asChild variant="outline">
             <Link to="/entradas"><PackagePlus className="size-4" />Registrar entrada</Link>
           </Button>
+          <Button type="button" variant="outline" disabled={exporting} onClick={() => void exportExcel()}>
+            <Download className="size-4" />{exporting ? "Generando…" : "Respaldo Excel"}
+          </Button>
         </div>
       </div>
+
+      {exportError ? (
+        <p className="rounded-[var(--radius-sm)] bg-danger-bg px-3 py-2 text-sm text-danger">
+          {exportError}
+        </p>
+      ) : null}
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Piezas en almacén" value={String(units)} icon={Package} />

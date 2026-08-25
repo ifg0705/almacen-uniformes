@@ -65,13 +65,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <img
               src="/brands/cesantoni-symbol.png"
               alt="Cesantoni"
-              className="size-10 shrink-0 object-contain sm:hidden"
+              className="cesantoni-brand-logo size-10 shrink-0 object-contain sm:hidden"
             />
             <div className="min-w-0">
               <img
                 src="/brands/cesantoni-wordmark.png"
                 alt="Cesantoni Porcelanato Premium"
-                className="hidden h-11 w-auto max-w-[230px] object-contain object-left sm:block"
+                className="cesantoni-brand-logo hidden h-11 w-auto max-w-[230px] object-contain object-left sm:block"
               />
               <p className="mt-0.5 text-[11px] tracking-wide text-muted sm:text-xs">
                 Uniformes de colaboradores
