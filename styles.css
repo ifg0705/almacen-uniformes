@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #eeeeee;
+  --color-surface: #ffffff;
+  --color-elevated: #f5f5f5;
+  --color-fg: #151515;
+  --color-muted: #666666;
+  --color-subtle: #8a8a8a;
+  --color-border: #dddddd;
+  --color-primary: #111111;
+  --color-primary-fg: #ffffff;
+  --color-accent: #ededed;
+  --color-danger: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-warn: #9a6700;
+  --color-warn-bg: #fff8e6;
+  --color-ok: #176b3a;
+  --color-ok-bg: #edf8f1;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+.app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  min-height: 100dvh;
+  background: #f4f4f4;
+  color: #111111;
+}
+
+.app-splash__mark {
+  display: grid;
+  place-items: center;
+  width: min(42vw, 190px);
+  aspect-ratio: 1;
+  animation: cesantoni-pulse 1.15s ease-in-out infinite alternate;
+}
+
+.app-splash__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: invert(1) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.10));
+}
+
+.app-splash__text {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+
+@keyframes cesantoni-pulse {
+  from { transform: scale(0.94); opacity: 0.78; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.app-shell-enter {
+  animation: app-enter 220ms ease-out both;
+}
+
+@keyframes app-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Paleta neutra inspirada en la interfaz de inducción: blanco, gris claro y negro. */
+header img[src*="cesantoni-wordmark"],
+header img[src*="cesantoni-symbol"] {
+  filter: invert(1);
+}
