@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   ClipboardList,
@@ -26,8 +26,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const persistent = useInventory((s) => s.persistent);
   const hydrated = useInventory((s) => s.hydrated);
   const error = useInventory((s) => s.error);
+  const [minimumSplashDone, setMinimumSplashDone] = useState(false);
 
   useEffect(() => {
+    const splashTimer = window.setTimeout(() => setMinimumSplashDone(true), 1400);
     void sync();
     const timer = window.setInterval(() => void sync(), 10000);
     const onFocus = () => void sync();
@@ -37,15 +39,27 @@ export function AppShell({ children }: { children: ReactNode }) {
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      window.clearTimeout(splashTimer);
       window.clearInterval(timer);
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [sync]);
 
+  if (!minimumSplashDone || !hydrated) {
+    return (
+      <div className="app-splash" role="status" aria-label="Cargando sistema de uniformes">
+        <div className="app-splash__mark">
+          <img src="/brands/cesantoni-symbol.png" alt="Cesantoni" />
+        </div>
+        <p className="app-splash__text">Cargando sistema...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-dvh bg-bg text-fg">
-      <header className="border-b border-border bg-[#070a0c]">
+    <div className="app-shell-enter min-h-dvh bg-bg text-fg">
+      <header className="border-b border-border bg-[#4b5257]">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img
@@ -107,7 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6 pb-24 md:pb-10">{children}</main>
-      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-[#070a0c] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-[#4b5257] md:hidden">
         <div className="grid grid-cols-6">
           {NAV.map((item) => {
             const Icon = item.icon;

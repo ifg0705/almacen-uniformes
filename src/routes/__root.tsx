@@ -12,7 +12,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
-      { name: "theme-color", content: "#1f3a34" },
+      { name: "theme-color", content: "#62696e" },
       {
         name: "description",
         content: "Control de uniformes Cesantoni: kits al ingreso, existencias y entregas.",
