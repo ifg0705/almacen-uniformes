@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f3f6f6;
-  --color-surface: #ffffff;
-  --color-elevated: #ffffff;
-  --color-fg: #16282d;
-  --color-muted: #64767a;
-  --color-subtle: #8a989b;
-  --color-border: #dce5e6;
-  --color-primary: #0f5264;
-  --color-primary-fg: #ffffff;
-  --color-accent: #ef872c;
-  --color-danger: #b43b35;
-  --color-danger-bg: #fbe9e7;
-  --color-warn: #9b6315;
-  --color-warn-bg: #fff1d9;
-  --color-ok: #337b4c;
-  --color-ok-bg: #e7f5eb;
-  --font-sans: "IBM Plex Sans", "Segoe UI", Arial, system-ui, sans-serif;
-  --font-display: "IBM Plex Sans", "Segoe UI", Arial, system-ui, sans-serif;
+  --color-bg: #090d10;
+  --color-surface: #11171b;
+  --color-elevated: #171e23;
+  --color-fg: #f5f5f2;
+  --color-muted: #a9b0b3;
+  --color-subtle: #7e888d;
+  --color-border: #2a3237;
+  --color-primary: #f5f5f2;
+  --color-primary-fg: #0b0f12;
+  --color-accent: #d9dcdd;
+  --color-danger: #ef7a7a;
+  --color-danger-bg: #321719;
+  --color-warn: #f0bb67;
+  --color-warn-bg: #2a2113;
+  --color-ok: #74d69f;
+  --color-ok-bg: #10251a;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --radius-sm: 9px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 26px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }
 
 @layer base {
@@ -39,42 +39,15 @@
   }
 
   body {
-    margin: 0;
-    background:
-      radial-gradient(circle at 0% 0%, rgba(118, 185, 71, 0.08), transparent 24rem),
-      radial-gradient(circle at 100% 0%, rgba(15, 82, 100, 0.08), transparent 28rem),
-      var(--color-bg);
+    background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
     line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: rgba(239, 135, 44, 0.24);
+    background: rgba(255, 255, 255, 0.22);
   }
-}
-
-.brand-hero {
-  position: relative;
-  isolation: isolate;
-  background:
-    radial-gradient(circle at 85% 18%, rgba(118, 185, 71, 0.24), transparent 18rem),
-    radial-gradient(circle at 70% 105%, rgba(239, 135, 44, 0.22), transparent 22rem),
-    linear-gradient(125deg, #0d4656 0%, #0f5264 55%, #123d49 100%);
-}
-
-.brand-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.18;
-  background-image:
-    linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: linear-gradient(90deg, transparent 22%, #000 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -83,11 +56,5 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-@layer components {
-  .page-eyebrow {
-    @apply text-[11px] font-bold uppercase tracking-[0.16em] text-accent;
   }
 }
