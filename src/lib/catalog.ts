@@ -157,13 +157,11 @@ export type KitPiece = {
 export const ROLE_LABEL: Record<Role, string> = {
   operador: "Operador",
   supervisor: "Supervisor",
-  mantenimiento: "Personal de mantenimiento",
+  mantenimiento: "Supervisor de mantenimiento",
   caseta: "Operador de caseta",
 };
 
-export function kitFor(_role: Role, gender: Gender): KitPiece[] {
-  // Todos los puestos configurados reciben el mismo kit base solicitado.
-  // La prenda cambia a su equivalente de dama cuando corresponde.
+function operatorOrMaintenanceKit(gender: Gender): KitPiece[] {
   return [
     {
       key: "pantalon",
@@ -179,7 +177,7 @@ export function kitFor(_role: Role, gender: Gender): KitPiece[] {
     },
     {
       key: "polo",
-      label: "Polo azul cielo",
+      label: "Polo azul cielo (unisex)",
       qty: 1,
       family: "polo-cielo",
     },
@@ -190,6 +188,89 @@ export function kitFor(_role: Role, gender: Gender): KitPiece[] {
       family: gender === "mujer" ? "camisa-mezclilla-dama" : "camisa-mezclilla-cab",
     },
   ];
+}
+
+function standardSupervisorKit(gender: Gender): KitPiece[] {
+  return [
+    {
+      key: "pantalon",
+      label: gender === "mujer" ? "Pantalón mezclilla dama" : "Pantalón caqui",
+      qty: 2,
+      family: gender === "mujer" ? "pantalon-mezclilla-dama" : "pantalon-caqui-cab",
+      note:
+        gender === "mujer"
+          ? "No hay pantalón caqui dama en el catálogo actual; se usa mezclilla dama."
+          : undefined,
+    },
+    {
+      key: "zapato",
+      label: "Botas de seguridad",
+      qty: 1,
+      family: "zapato",
+    },
+    {
+      key: "polo",
+      label: "Polo azul marino (unisex)",
+      qty: 1,
+      family: "polo-marino",
+    },
+    {
+      key: "camisa",
+      label: gender === "mujer" ? "Blusa oxford" : "Camisa oxford",
+      qty: 1,
+      family: gender === "mujer" ? "blusa-oxford" : "camisa-oxford-cab",
+    },
+  ];
+}
+
+function casetaKit(gender: Gender): KitPiece[] {
+  return [
+    {
+      key: "pantalon",
+      label: gender === "mujer" ? "Pantalón mezclilla dama" : "Pantalón caqui",
+      qty: 2,
+      family: gender === "mujer" ? "pantalon-mezclilla-dama" : "pantalon-caqui-cab",
+      note:
+        gender === "mujer"
+          ? "No hay pantalón caqui dama en el catálogo actual; se usa mezclilla dama."
+          : undefined,
+    },
+    {
+      key: "zapato",
+      label: "Botas de seguridad",
+      qty: 1,
+      family: "zapato",
+    },
+    {
+      key: "polo",
+      label: "Polo azul rey (unisex)",
+      qty: 1,
+      // En el catálogo original esta familia se llamó polo-cielo,
+      // pero las prendas cargadas corresponden a PLAYERA AZUL REY.
+      family: "polo-cielo",
+    },
+    {
+      key: "camisa",
+      label: gender === "mujer" ? "Blusa oxford" : "Camisa oxford",
+      qty: 1,
+      family: gender === "mujer" ? "blusa-oxford" : "camisa-oxford-cab",
+    },
+  ];
+}
+
+export function kitFor(role: Role, gender: Gender): KitPiece[] {
+  // Operadores y supervisor de mantenimiento usan mezclilla.
+  if (role === "operador" || role === "mantenimiento") {
+    return operatorOrMaintenanceKit(gender);
+  }
+
+  // Operador de caseta: pantalón caqui, botas, polo azul rey y camisa oxford.
+  if (role === "caseta") {
+    return casetaKit(gender);
+  }
+
+  // Supervisores de las demás áreas usan el kit estándar.
+  return standardSupervisorKit(gender);
 }
 
 export function stockStatus(item: Item): "ok" | "bajo" | "agotado" {

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Gender, Item, Role } from "./catalog";
 import {
+  deleteDeliveryOnServer,
   getInventorySnapshot,
   issueKitOnServer,
   receiveStock,
@@ -33,6 +34,7 @@ type State = {
     gender: Gender;
     sizes: Sizes;
   }) => Promise<{ ok: true } | { ok: false; error: string }>;
+  deleteDelivery: (deliveryId: string) => Promise<{ ok: true } | { ok: false; error: string }>;
   receive: (input: {
     itemId: string;
     qty: number;
@@ -80,6 +82,16 @@ export const useInventory = create<State>((set) => ({
   issueKit: async (input) => {
     try {
       const data = await issueKitOnServer({ data: input });
+      set(applySnapshot(data));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: message(error) };
+    }
+  },
+
+  deleteDelivery: async (deliveryId) => {
+    try {
+      const data = await deleteDeliveryOnServer({ data: { deliveryId } });
       set(applySnapshot(data));
       return { ok: true };
     } catch (error) {

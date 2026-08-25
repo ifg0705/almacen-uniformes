@@ -55,6 +55,11 @@ const issueSchema = z.object({
   sizes: sizesSchema,
 });
 
+
+const deleteDeliverySchema = z.object({
+  deliveryId: z.string().min(1),
+});
+
 const receiveSchema = z.object({
   itemId: z.string().min(1),
   qty: z.coerce.number().int().positive(),
@@ -342,3 +347,54 @@ export const issueKitOnServer = createServerFn({ method: "POST" })
 
     return snapshot();
   });
+
+export const deleteDeliveryOnServer = createServerFn({ method: "POST" })
+  .validator((input: unknown) => deleteDeliverySchema.parse(input))
+  .handler(async ({ data }) => {
+    await ensureSeeded();
+    const { getSql } = await getDb();
+    const sql = await getSql();
+
+    const [delivery] = await sql.query<{ id: string; employee_name: string }>(
+      "select id, employee_name from deliveries where id = $1",
+      [data.deliveryId],
+    );
+
+    if (!delivery) throw new Error("La entrega seleccionada ya no existe.");
+
+    // Una sola sentencia SQL: repone todo el inventario, borra los movimientos
+    // ligados a esa entrega y elimina la entrega (sus líneas se borran por cascade).
+    // Así evitamos dejar el almacén descuadrado si algo falla a mitad del proceso.
+    const deleted = await sql.query<{ id: string }>(
+      `with restored as (
+         select item_id, sum(qty)::integer as qty
+         from delivery_lines
+         where delivery_id = $1
+         group by item_id
+       ),
+       updated as (
+         update inventory_items i
+         set stock = i.stock + r.qty, updated_at = now()
+         from restored r
+         where i.id = r.item_id
+         returning i.id
+       ),
+       deleted_movements as (
+         delete from stock_movements
+         where reference = $1 and movement_type = 'entrega'
+         returning id
+       ),
+       deleted_delivery as (
+         delete from deliveries
+         where id = $1
+         returning id
+       )
+       select id from deleted_delivery`,
+      [data.deliveryId],
+    );
+
+    if (!deleted.length) throw new Error("No se pudo eliminar la entrega.");
+
+    return snapshot();
+  });
+

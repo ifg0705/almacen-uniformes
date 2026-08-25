@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ROLE_LABEL } from "@/lib/catalog";
 import { useInventory } from "@/lib/store";
 
@@ -9,6 +11,22 @@ export function Historial() {
   const deliveries = useInventory((s) => s.deliveries);
   const movements = useInventory((s) => s.movements);
   const sync = useInventory((s) => s.sync);
+  const deleteDelivery = useInventory((s) => s.deleteDelivery);
+  const [deletingId, setDeletingId] = useState("");
+  const [error, setError] = useState("");
+
+  async function removeDelivery(deliveryId: string, employeeName: string) {
+    const confirmed = window.confirm(
+      `¿Eliminar la entrega de ${employeeName}? Las prendas se devolverán automáticamente al inventario.`,
+    );
+    if (!confirmed) return;
+
+    setError("");
+    setDeletingId(deliveryId);
+    const result = await deleteDelivery(deliveryId);
+    setDeletingId("");
+    if (!result.ok) setError(result.error);
+  }
 
   return (
     <div className="space-y-7">
@@ -29,8 +47,19 @@ export function Historial() {
         </button>
       </div>
 
+      {error ? (
+        <p className="rounded-[var(--radius-sm)] bg-danger-bg px-3 py-2 text-sm text-danger">
+          {error}
+        </p>
+      ) : null}
+
       <section>
-        <h2 className="mb-3 font-display text-xl text-primary">Entregas de kits</h2>
+        <div className="mb-3">
+          <h2 className="font-display text-xl text-primary">Entregas de kits</h2>
+          <p className="mt-1 text-xs text-muted">
+            Si eliminas una entrega, todas sus prendas se regresan automáticamente al inventario.
+          </p>
+        </div>
         {deliveries.length === 0 ? (
           <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-muted">
             Aún no hay entregas. Cuando entre un colaborador, registra el kit en Entregar.
@@ -42,14 +71,25 @@ export function Historial() {
                 key={delivery.id}
                 className="rounded-[var(--radius-lg)] border border-border bg-surface p-4"
               >
-                <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="font-medium">{delivery.name}</p>
                     <p className="text-xs text-muted">
-                      {delivery.date} {delivery.area ? `· ${delivery.area}` : ""}
+                      {delivery.date} {delivery.area ? `· ${delivery.area}` : ""} · {delivery.gender === "mujer" ? "Mujer" : "Hombre"}
                     </p>
                   </div>
-                  <Badge>{ROLE_LABEL[delivery.role] ?? delivery.role}</Badge>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge>{ROLE_LABEL[delivery.role] ?? delivery.role}</Badge>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="sm"
+                      disabled={deletingId === delivery.id}
+                      onClick={() => void removeDelivery(delivery.id, delivery.name)}
+                    >
+                      {deletingId === delivery.id ? "Eliminando…" : "Eliminar entrega"}
+                    </Button>
+                  </div>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm">
                   {delivery.lines.map((line) => (
