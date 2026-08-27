@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { AlertTriangle, Boxes, CircleDollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { QrMark } from "@/components/qr-code";
@@ -27,6 +28,9 @@ export function Inventario() {
   }, [items, q, filter]);
 
   const open = items.find((i) => i.id === openId);
+  const totalValue = items.reduce((sum, item) => sum + item.stock * item.unitCost, 0);
+  const totalUnits = items.reduce((sum, item) => sum + item.stock, 0);
+  const exhausted = items.filter((item) => stockStatus(item) === "agotado").length;
 
   return (
     <div className="space-y-5">
@@ -37,6 +41,12 @@ export function Inventario() {
           Rojo = agotado. Ámbar = en o bajo el mínimo. Toca un renglón para ver el código QR.
         </p>
       </div>
+
+      <section className="grid gap-3 sm:grid-cols-3">
+        <InventoryStat label="Valor del inventario" value={money(totalValue)} icon={CircleDollarSign} />
+        <InventoryStat label="Piezas disponibles" value={String(totalUnits)} icon={Boxes} />
+        <InventoryStat label="Productos agotados" value={String(exhausted)} icon={AlertTriangle} alert={exhausted > 0} />
+      </section>
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Input
@@ -120,6 +130,18 @@ export function Inventario() {
           </div>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function InventoryStat({ label, value, icon: Icon, alert }: { label: string; value: string; icon: typeof Boxes; alert?: boolean }) {
+  return (
+    <div className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs text-muted">{label}</p>
+        <Icon className={alert ? "size-4 text-danger" : "size-4 text-subtle"} strokeWidth={1.75} />
+      </div>
+      <p className="mt-2 font-mono text-xl tabular-nums tracking-tight">{value}</p>
     </div>
   );
 }

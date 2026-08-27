@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EntregarRouteImport } from './routes/entregar'
 import { Route as EntradasRouteImport } from './routes/entradas'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as HistorialRouteImport } from './routes/historial'
 import { Route as InventarioRouteImport } from './routes/inventario'
 import { Route as KitsRouteImport } from './routes/kits'
@@ -29,6 +30,11 @@ const EntregarRoute = EntregarRouteImport.update({
 const EntradasRoute = EntradasRouteImport.update({
   id: '/entradas',
   path: '/entradas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistorialRoute = HistorialRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/entregar': typeof EntregarRoute
   '/entradas': typeof EntradasRoute
+  '/dashboard': typeof DashboardRoute
   '/historial': typeof HistorialRoute
   '/inventario': typeof InventarioRoute
   '/kits': typeof KitsRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/entregar': typeof EntregarRoute
   '/entradas': typeof EntradasRoute
+  '/dashboard': typeof DashboardRoute
   '/historial': typeof HistorialRoute
   '/inventario': typeof InventarioRoute
   '/kits': typeof KitsRoute
@@ -68,22 +76,24 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/entregar': typeof EntregarRoute
   '/entradas': typeof EntradasRoute
+  '/dashboard': typeof DashboardRoute
   '/historial': typeof HistorialRoute
   '/inventario': typeof InventarioRoute
   '/kits': typeof KitsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entregar' | '/entradas' | '/historial' | '/inventario' | '/kits'
+  fullPaths: '/' | '/entregar' | '/entradas' | '/dashboard' | '/historial' | '/inventario' | '/kits'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/entregar' | '/entradas' | '/historial' | '/inventario' | '/kits'
-  id: '__root__' | '/' | '/entregar' | '/entradas' | '/historial' | '/inventario' | '/kits'
+  to: '/' | '/entregar' | '/entradas' | '/dashboard' | '/historial' | '/inventario' | '/kits'
+  id: '__root__' | '/' | '/entregar' | '/entradas' | '/dashboard' | '/historial' | '/inventario' | '/kits'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EntregarRoute: typeof EntregarRoute
   EntradasRoute: typeof EntradasRoute
+  DashboardRoute: typeof DashboardRoute
   HistorialRoute: typeof HistorialRoute
   InventarioRoute: typeof InventarioRoute
   KitsRoute: typeof KitsRoute
@@ -110,6 +120,13 @@ declare module '@tanstack/react-router' {
       path: '/entradas'
       fullPath: '/entradas'
       preLoaderRoute: typeof EntradasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historial': {
@@ -140,6 +157,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EntregarRoute: EntregarRoute,
   EntradasRoute: EntradasRoute,
+  DashboardRoute: DashboardRoute,
   HistorialRoute: HistorialRoute,
   InventarioRoute: InventarioRoute,
   KitsRoute: KitsRoute,

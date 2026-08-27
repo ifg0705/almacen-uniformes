@@ -7,7 +7,6 @@ import { FAMILY_LABEL, stockStatus } from "@/lib/catalog";
 import { useInventory } from "@/lib/store";
 import { getFullBackup } from "@/lib/inventory-api";
 import { downloadBackupXlsx } from "@/lib/excel-export";
-import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -17,7 +16,6 @@ function Home() {
   const agotados = items.filter((i) => stockStatus(i) === "agotado");
   const bajos = items.filter((i) => stockStatus(i) === "bajo");
   const units = items.reduce((a, i) => a + i.stock, 0);
-  const value = items.reduce((a, i) => a + i.stock * i.unitCost, 0);
   const alerts = [...agotados, ...bajos];
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState("");
@@ -41,16 +39,16 @@ function Home() {
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Almacén</p>
           <h1 className="font-display text-3xl tracking-tight text-primary md:text-4xl">
-            Uniformes al ingreso
+            Uniformes de colaboradores
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted">
-            Controla existencias, entradas de mercancía y kits de ingreso para operadores,
-            supervisores, mantenimiento y caseta desde cualquier dispositivo conectado.
+            Controla existencias, entradas de mercancía, kits de ingreso, reposiciones y respaldos
+            desde cualquier dispositivo conectado.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button asChild>
-            <Link to="/entregar">Entregar kit de ingreso</Link>
+            <Link to="/entregar">Entregar uniforme</Link>
           </Button>
           <Button asChild variant="outline">
             <Link to="/entradas"><PackagePlus className="size-4" />Registrar entrada</Link>
@@ -69,7 +67,7 @@ function Home() {
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Piezas en almacén" value={String(units)} icon={Package} />
-        <Stat label="Valor inventario" value={money(value)} icon={Shirt} />
+        <Stat label="Productos / tallas" value={String(items.length)} icon={Shirt} />
         <Stat label="Entregas registradas" value={String(deliveries.length)} icon={Users} />
         <Stat
           label="Por reponer"

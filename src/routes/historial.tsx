@@ -55,14 +55,14 @@ export function Historial() {
 
       <section>
         <div className="mb-3">
-          <h2 className="font-display text-xl text-primary">Entregas de kits</h2>
+          <h2 className="font-display text-xl text-primary">Entregas a colaboradores</h2>
           <p className="mt-1 text-xs text-muted">
             Si eliminas una entrega, todas sus prendas se regresan automáticamente al inventario.
           </p>
         </div>
         {deliveries.length === 0 ? (
           <p className="rounded-[var(--radius-lg)] border border-border bg-surface p-6 text-sm text-muted">
-            Aún no hay entregas. Cuando entre un colaborador, registra el kit en Entregar.
+            Aún no hay entregas. Registra un kit o una reposición individual en Entregar.
           </p>
         ) : (
           <ul className="space-y-3">
@@ -77,9 +77,10 @@ export function Historial() {
                     <p className="text-xs text-muted">
                       {delivery.date} {delivery.area ? `· ${delivery.area}` : ""} · {delivery.gender === "mujer" ? "Mujer" : "Hombre"}
                     </p>
+                    {delivery.note ? <p className="mt-1 text-xs text-subtle">{delivery.note}</p> : null}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge>{ROLE_LABEL[delivery.role] ?? delivery.role}</Badge>
+                    <Badge>{delivery.kind === "individual" ? "Cambio individual" : ROLE_LABEL[delivery.role] ?? delivery.role}</Badge>
                     <Button
                       type="button"
                       variant="danger"

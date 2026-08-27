@@ -1,6 +1,8 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  AlertTriangle,
+  BarChart3,
   ClipboardList,
   LayoutGrid,
   Package,
@@ -9,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { stockStatus } from "@/lib/catalog";
 import { useInventory } from "@/lib/store";
 
 const NAV = [
@@ -16,6 +19,7 @@ const NAV = [
   { to: "/entregar", label: "Entregar", icon: Users },
   { to: "/entradas", label: "Entradas", icon: PackagePlus },
   { to: "/inventario", label: "Inventario", icon: Package },
+  { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { to: "/historial", label: "Historial", icon: ClipboardList },
   { to: "/kits", label: "Kits", icon: Shirt },
 ] as const;
@@ -26,7 +30,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const persistent = useInventory((s) => s.persistent);
   const hydrated = useInventory((s) => s.hydrated);
   const error = useInventory((s) => s.error);
+  const items = useInventory((s) => s.items);
   const [minimumSplashDone, setMinimumSplashDone] = useState(false);
+
+  const exhausted = items.filter((item) => stockStatus(item) === "agotado");
 
   useEffect(() => {
     const splashTimer = window.setTimeout(() => setMinimumSplashDone(true), 1400);
@@ -108,7 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     key={item.to}
                     to={item.to}
                     className={cn(
-                      "rounded-[var(--radius-sm)] px-3 py-2 text-sm",
+                      "rounded-[var(--radius-sm)] px-2.5 py-2 text-sm",
                       active ? "bg-primary text-primary-fg" : "text-muted hover:bg-bg hover:text-fg",
                     )}
                   >
@@ -120,9 +127,27 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
+
+      {exhausted.length > 0 ? (
+        <div className="border-b border-danger/20 bg-danger-bg">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-sm text-danger">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-4 shrink-0" />
+              <span className="font-medium">
+                Alerta: {exhausted.length} producto{exhausted.length === 1 ? "" : "s"} agotado{exhausted.length === 1 ? "" : "s"}.
+              </span>
+              <span className="hidden sm:inline">Es necesario programar reposición.</span>
+            </div>
+            <Link to="/inventario" className="font-medium underline underline-offset-4">
+              Revisar agotados
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
       <main className="mx-auto max-w-6xl px-4 py-6 pb-24 md:pb-10">{children}</main>
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface md:hidden">
-        <div className="grid grid-cols-6">
+        <div className="grid grid-cols-7">
           {NAV.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.to;
@@ -131,7 +156,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-1 text-[9px]",
+                  "flex min-h-14 flex-col items-center justify-center gap-1 text-[8px]",
                   active ? "text-primary" : "text-subtle",
                 )}
               >

@@ -260,6 +260,7 @@ function makeSheets(data: FullBackup): SheetSpec[] {
       ["Piezas en almacén", totalUnits],
       ["Valor estimado del inventario", Number(totalValue.toFixed(2))],
       ["Entregas registradas", data.deliveries.length],
+      ["Cambios / reposiciones individuales", data.deliveries.filter((d) => d.kind === "individual").length],
       ["Movimientos registrados", data.movements.length],
     ],
   };
@@ -282,8 +283,8 @@ function makeSheets(data: FullBackup): SheetSpec[] {
 
   const deliveries: SheetSpec = {
     name: "Entregas",
-    headers: ["ID entrega", "Fecha", "Colaborador", "Área", "Puesto", "Sexo", "Total piezas"],
-    widths: [24, 14, 32, 26, 28, 12, 14],
+    headers: ["ID entrega", "Fecha", "Colaborador", "Área", "Puesto", "Sexo", "Tipo", "Motivo / nota", "Total piezas"],
+    widths: [24, 14, 32, 26, 28, 12, 18, 34, 14],
     rows: data.deliveries.map((d) => [
       d.id,
       d.date,
@@ -291,14 +292,16 @@ function makeSheets(data: FullBackup): SheetSpec[] {
       d.area,
       niceRole(d.role),
       niceGender(d.gender),
+      d.kind === "individual" ? "Cambio individual" : "Kit completo",
+      d.note,
       d.lines.reduce((sum, line) => sum + line.qty, 0),
     ]),
   };
 
   const deliveryDetail: SheetSpec = {
     name: "Detalle entregas",
-    headers: ["ID entrega", "Fecha", "Colaborador", "Área", "Puesto", "Sexo", "ID producto", "Producto", "Talla", "Cantidad"],
-    widths: [24, 14, 30, 24, 28, 12, 14, 46, 12, 12],
+    headers: ["ID entrega", "Fecha", "Colaborador", "Área", "Puesto", "Sexo", "Tipo", "Motivo / nota", "ID producto", "Producto", "Talla", "Cantidad"],
+    widths: [24, 14, 30, 24, 28, 12, 18, 34, 14, 46, 12, 12],
     rows: data.deliveries.flatMap((d) =>
       d.lines.map((line) => [
         d.id,
@@ -307,6 +310,8 @@ function makeSheets(data: FullBackup): SheetSpec[] {
         d.area,
         niceRole(d.role),
         niceGender(d.gender),
+        d.kind === "individual" ? "Cambio individual" : "Kit completo",
+        d.note,
         line.itemId,
         line.description,
         line.size,

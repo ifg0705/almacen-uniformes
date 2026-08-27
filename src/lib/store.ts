@@ -2,8 +2,11 @@ import { create } from "zustand";
 import type { Gender, Item, Role } from "./catalog";
 import {
   deleteDeliveryOnServer,
+  deleteEntryOnServer,
+  editEntryOnServer,
   getInventorySnapshot,
   issueKitOnServer,
+  issueSingleOnServer,
   receiveStock,
   type Delivery,
   type InventorySnapshot,
@@ -16,6 +19,16 @@ type Sizes = {
   polo: string;
   zapato: string;
 };
+
+type EntryInput = {
+  itemId: string;
+  qty: number;
+  date: string;
+  supplier: string;
+  note: string;
+};
+
+type Result = Promise<{ ok: true } | { ok: false; error: string }>;
 
 type State = {
   items: Item[];
@@ -33,15 +46,20 @@ type State = {
     role: Role;
     gender: Gender;
     sizes: Sizes;
-  }) => Promise<{ ok: true } | { ok: false; error: string }>;
-  deleteDelivery: (deliveryId: string) => Promise<{ ok: true } | { ok: false; error: string }>;
-  receive: (input: {
-    itemId: string;
-    qty: number;
+  }) => Result;
+  issueSingle: (input: {
+    name: string;
+    area: string;
     date: string;
-    supplier: string;
+    role: Role;
+    gender: Gender;
+    itemId: string;
     note: string;
-  }) => Promise<{ ok: true } | { ok: false; error: string }>;
+  }) => Result;
+  deleteDelivery: (deliveryId: string) => Result;
+  receive: (input: EntryInput) => Result;
+  editEntry: (input: EntryInput & { movementId: string }) => Result;
+  deleteEntry: (movementId: string) => Result;
 };
 
 function applySnapshot(snapshot: InventorySnapshot) {
@@ -89,6 +107,16 @@ export const useInventory = create<State>((set) => ({
     }
   },
 
+  issueSingle: async (input) => {
+    try {
+      const data = await issueSingleOnServer({ data: input });
+      set(applySnapshot(data));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: message(error) };
+    }
+  },
+
   deleteDelivery: async (deliveryId) => {
     try {
       const data = await deleteDeliveryOnServer({ data: { deliveryId } });
@@ -102,6 +130,26 @@ export const useInventory = create<State>((set) => ({
   receive: async (input) => {
     try {
       const data = await receiveStock({ data: input });
+      set(applySnapshot(data));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: message(error) };
+    }
+  },
+
+  editEntry: async (input) => {
+    try {
+      const data = await editEntryOnServer({ data: input });
+      set(applySnapshot(data));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: message(error) };
+    }
+  },
+
+  deleteEntry: async (movementId) => {
+    try {
+      const data = await deleteEntryOnServer({ data: { movementId } });
       set(applySnapshot(data));
       return { ok: true };
     } catch (error) {
